@@ -78,15 +78,16 @@ const hf = `${import.meta.env.BASE_URL}assets/hf`;
     pointer-events: none;
   }
 
+  /* Desktop: 제목을 본문(‘안녕하십니까’) 시작 위치에 맞춰 오른쪽 8열에 배치, 본문은 그 아래 */
   .invitation-grid {
     display: grid;
     grid-template-columns: 4fr 8fr;
-    gap: 24px;
+    column-gap: 24px;
+    row-gap: 40px;
   }
-  .invitation-head {
-    align-self: start;
-    position: sticky;
-    top: calc(var(--header-h) + 32px);
+  .invitation-head,
+  .invitation-body {
+    grid-column: 2;
   }
 
   .invitation-body {
@@ -108,10 +109,11 @@ const hf = `${import.meta.env.BASE_URL}assets/hf`;
   @media (max-width: 1199px) {
     .invitation-grid {
       grid-template-columns: 1fr;
-      gap: 32px;
+      row-gap: 32px;
     }
-    .invitation-head {
-      position: static;
+    .invitation-head,
+    .invitation-body {
+      grid-column: 1;
     }
   }
 </style>

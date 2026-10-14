@@ -11,8 +11,8 @@ export const event = {
   timeLabel: '10:00–15:00',
   startDate: '2026-11-05T10:00:00+09:00',
   // endDate: 폐회 종료 시각 미정 → 운영팀 확인 전 생략 (12장)
-  venue: '메종글래드 제주 2F 제이드홀',
-  venueEn: 'MAISON GLAD JEJU · 2F JADE HALL',
+  venue: '메종글래드 제주 2F 크리스탈홀',
+  venueEn: 'MAISON GLAD JEJU · 2F CRYSTAL HALL',
   fee: '무료, 사전등록 완료자 참석',
   contactEmail: 'md@tilon.com',
   keyMessage: 'Cloud에서 AI로, 구축에서 서비스로',
@@ -69,12 +69,12 @@ export interface Session {
 
 // 발표자·직함은 제공되지 않았으므로 넣지 않는다 (4.4)
 export const program: Session[] = [
-  { start: '10:00', end: '10:30', minutes: 30, title: '등록 및 시연 부스 관람', kind: 'break' },
+  { start: '10:00', end: '10:30', minutes: 30, title: '등록 및 시연 부스 관람', kind: 'standard' },
   { start: '10:30', end: '10:40', minutes: 10, title: '개회사', kind: 'standard' },
-  { start: '10:40', end: '11:10', minutes: 30, title: 'DstationX, 가상화의 다음 세대', subtitle: '제품군과 고객 도입 사례', kind: 'featured' },
-  { start: '11:10', end: '11:30', minutes: 20, title: 'TheOther.Space 2.0', subtitle: 'DstationX 엔진으로 완성한 서비스형 DaaS', kind: 'featured' },
-  { start: '11:30', end: '11:50', minutes: 20, title: '틸론 AI 서비스 패밀리 공개', kind: 'featured' },
-  { start: '11:50', end: '12:50', minutes: 60, title: '오찬 및 네트워킹', kind: 'break' },
+  { start: '10:40', end: '11:10', minutes: 30, title: 'DstationX, 가상화의 다음 세대', subtitle: '제품군과 고객 도입 사례', kind: 'standard' },
+  { start: '11:10', end: '11:30', minutes: 20, title: 'TheOther.Space 2.0', subtitle: 'DstationX 엔진으로 완성한 서비스형 DaaS', kind: 'standard' },
+  { start: '11:30', end: '11:50', minutes: 20, title: '틸론 AI 서비스 패밀리 공개', kind: 'standard' },
+  { start: '11:50', end: '12:50', minutes: 60, title: '오찬 및 네트워킹', kind: 'standard' },
   { start: '12:50', end: '13:00', minutes: 10, title: '축사', kind: 'standard' },
   { start: '13:00', end: '13:20', minutes: 20, title: '구축에서 구독으로', subtitle: '틸론은 왜 AI 서비스를 만들었는가', kind: 'standard' },
   { start: '13:20', end: '14:00', minutes: 40, title: 'AI와 제주', subtitle: 'AI서비스가 제주 산업에 미치는 영향', kind: 'featured' },

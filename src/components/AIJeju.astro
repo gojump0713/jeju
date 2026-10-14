@@ -35,6 +35,11 @@ const hf = `${import.meta.env.BASE_URL}assets/hf`;
   <div class="container aijeju-content">
     <h3 id="aijeju-title" class="aijeju-title">AI meets JEJU</h3>
     <p class="aijeju-desc">AI 서비스가 제주 산업과 만날 때 새로운 가능성이 시작됩니다.</p>
+    <p class="aijeju-sub">
+      AI와 함께 나만의 동화책·가족 이야기·감사 메시지·자서전을 만들고,<br class="br-wide" />
+      AI 활용부터 GPU 기반 학습·실습까지 서비스로 이용하며,<br class="br-wide" />
+      클라우드에서 나의 AI 업무 공간을 만나는 새로운 일상.
+    </p>
   </div>
 
   <button class="aijeju-toggle" type="button" hidden aria-pressed="false" data-aijeju-toggle>
@@ -99,6 +104,20 @@ const hf = `${import.meta.env.BASE_URL}assets/hf`;
     font-weight: 600;
     line-height: 1.6;
     text-shadow: 0 1px 12px rgba(8, 21, 35, 0.5);
+  }
+
+  .aijeju-sub {
+    max-width: 720px;
+    margin: 20px auto 0;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1.0625rem);
+    line-height: 1.75;
+    text-shadow: 0 1px 10px rgba(8, 21, 35, 0.6);
+  }
+  @media (max-width: 767px) {
+    .aijeju-sub .br-wide {
+      display: none;
+    }
   }
 
   .aijeju-toggle {

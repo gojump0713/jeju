@@ -5,7 +5,7 @@ import { event } from '@/data/event';
 const description =
   '2026년 11월 5일 제주에서 열리는 TilonSoft The Other Day 2026. DstationX, TheOther.Space 2.0, Kstory.ai, TheOther.Town 등 틸론소프트의 새로운 AI·Cloud 서비스를 만나보세요.';
 const ogDescription =
-  '2026.11.05 10:00~15:00, 메종글래드 제주 2F 제이드홀. 틸론소프트의 AI·Cloud 서비스를 만나보세요. 무료 사전등록.';
+  `2026.11.05 10:00~15:00, ${event.venue}. 틸론소프트의 AI·Cloud 서비스를 만나보세요. 무료 사전등록.`;
 // og:image는 절대 HTTPS URL (12장). canonical은 운영 도메인 확정 후 지정.
 const ogImage = new URL(`${import.meta.env.BASE_URL}assets/og/hf-i09-og-v01.jpg`, Astro.site).href;
 const ogImageAlt = 'TilonSoft The Other Day 2026 — 2026년 11월 5일 메종글래드 제주';

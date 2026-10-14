@@ -1,8 +1,9 @@
 ---
 // S04 Program (작업지시서 4.4, 6장, 7.3)
 // 단일 DOM 순서 목록을 CSS로 reflow — Desktop은 시간열 + 설명열, Mobile은 카드형.
+// 강조는 'AI와 제주' 한 세션만(featured), 나머지는 동일 스타일 (2026-10-14 사용자 요청).
 // 폐회 행은 종료 시각·소요 시간을 표시하지 않는다. 색만으로 세션을 구분하지 않도록 유형 텍스트를 함께 제공.
-import { program } from '@/data/event';
+import { event, program } from '@/data/event';
 
 const kindLabel = { featured: '주요 세션', break: '', standard: '', closing: '' } as const;
 ---
@@ -11,7 +12,7 @@ const kindLabel = { featured: '주요 세션', break: '', standard: '', closing:
   <div class="container">
     <p class="section-label" aria-hidden="true">PROGRAM</p>
     <h3 id="program-title" class="section-title">행사 프로그램</h3>
-    <p class="section-lead">2026년 11월 5일(목) 10:00 – 15:00 · 메종글래드 제주 2F 제이드홀</p>
+    <p class="section-lead">2026년 11월 5일(목) 10:00 – 15:00 · {event.venue}</p>
 
     <ol class="program-list">
       {

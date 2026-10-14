@@ -1,0 +1,772 @@
+---
+// S07 Registration + O02 Complete Modal (작업지시서 4.6, 7.2, 8장, 11.2)
+// - 실제 서버 저장 성공 응답 후에만 완료 표시. 엔드포인트 미설정이면 제출을 차단하고 안내한다.
+// - 오류: 필드 아래 구체 문구 + 상단 요약 + 첫 오류 focus. 제출 중 중복 클릭 차단. 실패 시 입력값 유지.
+// - 재시도는 같은 idempotencyKey 사용. 개인정보는 URL·로그·localStorage에 남기지 않는다.
+import { event, interestOptions, consent } from '@/data/event';
+
+const base = import.meta.env.BASE_URL;
+const apiUrl = import.meta.env.PUBLIC_REGISTRATION_API_URL ?? '';
+const status = import.meta.env.PUBLIC_REGISTRATION_STATUS === 'closed' ? 'closed' : 'open';
+const consentVersion = import.meta.env.PUBLIC_CONSENT_VERSION ?? '';
+const consentRows = consent.rows.filter((r) => r.desc);
+---
+
+<section
+  id="registration"
+  class="section registration"
+  aria-labelledby="registration-title"
+  data-registration
+  data-api={apiUrl}
+  data-status={status}
+  data-consent-version={consentVersion}
+  data-event-id={event.id}
+>
+  <div class="container registration-grid">
+    <div class="registration-intro">
+      <img
+        class="registration-ci"
+        src={`${base}assets/ci/tilonsoft-ci-white.png`}
+        alt="틸론소프트"
+        width="494"
+        height="96"
+        loading="lazy"
+      />
+      <p class="section-label registration-label" aria-hidden="true">REGISTRATION</p>
+      <h2 id="registration-title" class="section-title" tabindex="-1">
+        {event.name}에 함께해 주세요.
+      </h2>
+      <p class="registration-lead">AI와 Cloud가 만들어가는 새로운 변화를 직접 만나보세요.</p>
+      <dl class="registration-facts">
+        <div><dt>일시</dt><dd>{event.dateLabelKo} {event.timeLabel}</dd></div>
+        <div><dt>장소</dt><dd>{event.venue}</dd></div>
+        <div><dt>참가비</dt><dd>무료 · 사전등록 완료자 참석</dd></div>
+      </dl>
+    </div>
+
+    <div class="form-panel">
+      <div class="registration-done" tabindex="-1" hidden data-done>
+        <p class="registration-done-title">참가 신청이 완료되었습니다.</p>
+        <dl>
+          <div><dt>행사</dt><dd>{event.name}</dd></div>
+          <div><dt>일시</dt><dd>2026.11.05 10:00~15:00</dd></div>
+          <div><dt>장소</dt><dd>{event.venue}</dd></div>
+        </dl>
+        <p class="registration-done-note">
+          문의: <a href={`mailto:${event.contactEmail}`}>{event.contactEmail}</a>
+        </p>
+      </div>
+      {
+        status === 'closed' ? (
+          <div class="form-closed" role="status">
+            <p class="form-closed-title">사전등록이 마감되었습니다.</p>
+            <p>
+              문의: <a href={`mailto:${event.contactEmail}`}>{event.contactEmail}</a>
+            </p>
+          </div>
+        ) : (
+          <form class="reg-form" novalidate data-form>
+            {!apiUrl && (
+              <p class="form-notice" data-form-notice>
+                온라인 사전등록 접수를 준비 중입니다. 현재는 신청이 저장되지 않습니다. 문의:{' '}
+                <a href={`mailto:${event.contactEmail}`}>{event.contactEmail}</a>
+              </p>
+            )}
+
+            <div class="error-summary" tabindex="-1" hidden data-error-summary>
+              <p class="error-summary-title">입력 내용을 확인해 주세요.</p>
+              <ul data-error-list />
+            </div>
+
+            <p class="required-legend">
+              <span class="req" aria-hidden="true">*</span> 표시는 필수 입력 항목입니다.
+            </p>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="f-name">
+                  이름 <span class="req" aria-hidden="true">*</span>
+                  <span class="sr-only">(필수)</span>
+                </label>
+                <input id="f-name" name="name" type="text" autocomplete="name" maxlength="50" required aria-describedby="f-name-err" />
+                <p class="field-error" id="f-name-err" hidden />
+              </div>
+
+              <div class="field">
+                <label for="f-org">
+                  소속 <span class="req" aria-hidden="true">*</span>
+                  <span class="sr-only">(필수)</span>
+                </label>
+                <input id="f-org" name="organization" type="text" autocomplete="organization" maxlength="100" required aria-describedby="f-org-hint f-org-err" />
+                <p class="field-hint" id="f-org-hint">소속이 없으면 ‘없음’으로 입력해 주세요.</p>
+                <p class="field-error" id="f-org-err" hidden />
+              </div>
+
+              <div class="field">
+                <label for="f-role">부서/직책 <span class="opt">(선택)</span></label>
+                <input id="f-role" name="departmentRole" type="text" autocomplete="organization-title" maxlength="100" />
+              </div>
+
+              <div class="field">
+                <label for="f-phone">
+                  연락처 <span class="req" aria-hidden="true">*</span>
+                  <span class="sr-only">(필수)</span>
+                </label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" required aria-describedby="f-phone-hint f-phone-err" />
+                <p class="field-hint" id="f-phone-hint">예: 010-1234-5678</p>
+                <p class="field-error" id="f-phone-err" hidden />
+              </div>
+
+              <div class="field field-full">
+                <label for="f-email">
+                  이메일 <span class="req" aria-hidden="true">*</span>
+                  <span class="sr-only">(필수)</span>
+                </label>
+                <input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="f-email-err" />
+                <p class="field-error" id="f-email-err" hidden />
+              </div>
+
+              <fieldset class="field field-full">
+                <legend>관심 서비스 <span class="opt">(선택, 복수 선택 가능)</span></legend>
+                <div class="chip-group">
+                  {interestOptions.map((opt, i) => (
+                    <label class="chip">
+                      <input type="checkbox" name="interests" value={opt} id={`f-int-${i}`} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div class="field field-full">
+                <label for="f-question">사전 질문 <span class="opt">(선택)</span></label>
+                <textarea id="f-question" name="question" rows="4" maxlength="1000" aria-describedby="f-question-count" />
+                <p class="field-hint counter" id="f-question-count" aria-live="polite" data-counter>0 / 1,000자</p>
+              </div>
+            </div>
+
+            <div class="consent">
+              <details class="consent-detail">
+                <summary>개인정보 수집 및 이용 안내 전체 보기</summary>
+                <dl>
+                  {consentRows.map((r) => (
+                    <div>
+                      <dt>{r.term}</dt>
+                      <dd>{r.desc}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p>{consent.refusal}</p>
+              </details>
+              <label class="consent-check" for="f-consent">
+                <input id="f-consent" name="privacyConsent" type="checkbox" required aria-describedby="f-consent-err" />
+                <span>{consent.label}</span>
+              </label>
+              <p class="field-error" id="f-consent-err" hidden />
+            </div>
+
+            <p class="form-status" role="status" aria-live="polite" data-form-status />
+
+            <button class="btn btn-primary btn-lg submit" type="submit" data-submit>
+              참가 신청하기
+            </button>
+          </form>
+        )
+      }
+    </div>
+  </div>
+
+  <dialog class="complete-modal" aria-labelledby="complete-title" data-complete-modal>
+    <h3 id="complete-title" class="complete-title">참가 신청이 완료되었습니다.</h3>
+    <dl class="complete-facts">
+      <div><dt>행사</dt><dd>{event.name}</dd></div>
+      <div><dt>일시</dt><dd>2026.11.05 10:00~15:00</dd></div>
+      <div><dt>장소</dt><dd>{event.venue}</dd></div>
+      <div hidden data-confirm-row><dt>확인 번호</dt><dd data-confirm-id /></div>
+    </dl>
+    <form method="dialog">
+      <button class="btn btn-primary" type="submit">확인</button>
+    </form>
+  </dialog>
+</section>
+
+<style>
+  .registration {
+    background: var(--surface-dark);
+    color: #fff;
+  }
+  .registration-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .registration-ci {
+    width: auto;
+    height: 30px;
+    margin-bottom: 40px;
+  }
+  .registration-label {
+    color: #8fc3ff;
+  }
+  .registration .section-title {
+    margin-top: 12px;
+  }
+  .registration-lead {
+    margin: 16px 0 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.0625rem;
+  }
+  .registration-facts {
+    margin: 32px 0 0;
+    padding: 20px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .registration-facts div {
+    display: flex;
+    gap: 16px;
+    padding: 6px 0;
+  }
+  .registration-facts dt {
+    flex: none;
+    width: 56px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .registration-facts dd {
+    margin: 0;
+  }
+  .registration-done:focus-visible {
+    outline-offset: 12px;
+    border-radius: 8px;
+  }
+  .registration-done-title {
+    margin: 0 0 20px;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .registration-done::before {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    background:
+      no-repeat center / 24px
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E"),
+      var(--brand-blue);
+  }
+  .registration-done dl {
+    margin: 0;
+  }
+  .registration-done dl div {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+  }
+  .registration-done dt {
+    color: var(--text-secondary);
+  }
+  .registration-done dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .registration-done-note {
+    margin: 20px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid #dfe5eb;
+    color: var(--text-secondary);
+  }
+  .form-panel a {
+    color: var(--brand-blue);
+  }
+
+  .form-panel {
+    padding: 40px;
+    border-radius: 24px;
+    background: var(--surface-white);
+    color: var(--text-primary);
+  }
+
+  .form-notice {
+    margin: 0 0 24px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #fff6e0;
+    border: 1px solid #f1d38a;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  .form-closed-title {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  .error-summary {
+    margin: 0 0 24px;
+    padding: 16px 20px;
+    border: 2px solid #c62828;
+    border-radius: 12px;
+    background: #fdecec;
+  }
+  .error-summary-title {
+    margin: 0 0 8px;
+    color: #b71c1c;
+    font-weight: 800;
+  }
+  .error-summary ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .error-summary a {
+    color: #b71c1c;
+  }
+
+  .required-legend {
+    margin: 0 0 20px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+  .req {
+    color: #c62828;
+    font-weight: 700;
+  }
+  .opt {
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 0.875rem;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .field {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .field-full {
+    grid-column: 1 / -1;
+  }
+  .field label,
+  .field legend {
+    display: block;
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .field input[type='text'],
+  .field input[type='tel'],
+  .field input[type='email'],
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #b9c4cf;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 1rem;
+  }
+  .field textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: 3px solid rgba(1, 94, 168, 0.35);
+    outline-offset: 0;
+    border-color: var(--brand-blue);
+  }
+  .field [aria-invalid='true'] {
+    border-color: #c62828;
+    background: #fffafa;
+  }
+  .field-hint {
+    margin: 6px 0 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+  .counter {
+    text-align: right;
+  }
+  .field-error {
+    margin: 6px 0 0;
+    color: #b71c1c;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    position: relative;
+    display: inline-flex !important;
+    margin: 0 !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid #b9c4cf;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+  }
+  .chip input:checked + span {
+    border-color: var(--brand-blue);
+    background: rgba(1, 94, 168, 0.08);
+    color: var(--brand-blue);
+    font-weight: 700;
+  }
+  .chip input:checked + span::before {
+    content: '✓';
+    margin-right: 6px;
+  }
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--brand-blue);
+    outline-offset: 2px;
+  }
+
+  .consent {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #dfe5eb;
+  }
+  .consent-detail {
+    margin-bottom: 16px;
+    border: 1px solid #dfe5eb;
+    border-radius: 12px;
+    background: var(--surface-light);
+    font-size: 0.9375rem;
+  }
+  .consent-detail summary {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .consent-detail dl,
+  .consent-detail p {
+    margin: 0;
+    padding: 0 16px 12px;
+    line-height: 1.6;
+  }
+  .consent-detail dl div {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+  }
+  .consent-detail dt {
+    font-weight: 700;
+  }
+  .consent-detail dd {
+    margin: 0;
+  }
+  .consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 44px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .consent-check input {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: 2px 0 0;
+    accent-color: var(--brand-blue);
+  }
+
+  .form-status {
+    min-height: 1.5em;
+    margin: 20px 0 0;
+    font-weight: 600;
+  }
+  .form-status[data-tone='error'] {
+    color: #b71c1c;
+  }
+  .submit {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .complete-modal {
+    width: min(480px, calc(100vw - 32px));
+    padding: 32px;
+    border: 0;
+    border-radius: 24px;
+    color: var(--text-primary);
+  }
+  .complete-modal::backdrop {
+    background: rgba(8, 21, 35, 0.6);
+  }
+  .complete-title {
+    margin: 0 0 20px;
+    font-size: 1.375rem;
+    font-weight: 800;
+  }
+  .complete-facts {
+    margin: 0 0 24px;
+  }
+  .complete-facts div {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+  }
+  .complete-facts dt {
+    color: var(--text-secondary);
+  }
+  .complete-facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .complete-modal .btn {
+    width: 100%;
+  }
+
+  @media (max-width: 1199px) {
+    .registration-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+  @media (max-width: 767px) {
+    .form-panel {
+      padding: 24px 20px;
+      border-radius: 20px;
+    }
+    .field-grid {
+      grid-template-columns: 1fr;
+    }
+    .consent-detail dl div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+    .registration-ci {
+      height: 26px;
+      margin-bottom: 28px;
+    }
+  }
+</style>
+
+<script>
+  type FieldKey = 'name' | 'organization' | 'phone' | 'email' | 'privacyConsent';
+
+  const section = document.querySelector<HTMLElement>('[data-registration]');
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+
+  if (section && form) {
+    const api = section.dataset.api ?? '';
+    const summary = form.querySelector<HTMLElement>('[data-error-summary]')!;
+    const summaryList = form.querySelector<HTMLUListElement>('[data-error-list]')!;
+    const statusEl = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const counter = form.querySelector<HTMLElement>('[data-counter]')!;
+    const question = form.querySelector<HTMLTextAreaElement>('#f-question')!;
+    const modal = section.querySelector<HTMLDialogElement>('[data-complete-modal]')!;
+    const done = section.querySelector<HTMLElement>('[data-done]')!;
+
+    const fieldIds: Record<FieldKey, string> = {
+      name: 'f-name',
+      organization: 'f-org',
+      phone: 'f-phone',
+      email: 'f-email',
+      privacyConsent: 'f-consent',
+    };
+
+    let submitting = false;
+    // 같은 내용의 재시도에는 같은 키를 쓴다 (11.2). 입력이 바뀌면 새 키.
+    let idempotencyKey: string | null = null;
+    form.addEventListener('input', () => (idempotencyKey = null));
+
+    const updateCounter = () => {
+      counter.textContent = `${question.value.length.toLocaleString('ko-KR')} / 1,000자`;
+    };
+    question.addEventListener('input', updateCounter);
+
+    const normalizePhone = (raw: string) => {
+      const trimmed = raw.trim();
+      const plus = trimmed.startsWith('+');
+      const digits = trimmed.replace(/[^\d]/g, '');
+      return (plus ? '+' : '') + digits;
+    };
+
+    const validate = () => {
+      const data = new FormData(form);
+      const v = (k: string) => String(data.get(k) ?? '').trim();
+      const errors: Partial<Record<FieldKey, string>> = {};
+
+      if (!v('name')) errors.name = '이름을 입력해 주세요.';
+      else if (v('name').length > 50) errors.name = '이름은 50자 이내로 입력해 주세요.';
+
+      if (!v('organization')) errors.organization = '소속을 입력해 주세요. 소속이 없으면 ‘없음’으로 입력해 주세요.';
+
+      const rawPhone = v('phone');
+      const phone = normalizePhone(rawPhone);
+      const phoneDigits = phone.replace('+', '');
+      if (!rawPhone) errors.phone = '연락처를 입력해 주세요.';
+      else if (/[^\d\s\-+()]/.test(rawPhone) || phoneDigits.length < 9 || phoneDigits.length > 15)
+        errors.phone = '연락 가능한 전화번호를 입력해 주세요. 예: 010-1234-5678';
+
+      const email = v('email');
+      if (!email) errors.email = '이메일을 입력해 주세요.';
+      else if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+        errors.email = '이메일 형식을 확인해 주세요. 예: name@company.com';
+
+      if (!data.get('privacyConsent')) errors.privacyConsent = '개인정보 수집 및 이용에 동의해 주세요.';
+
+      return {
+        errors,
+        payload: {
+          eventId: section.dataset.eventId,
+          name: v('name'),
+          organization: v('organization'),
+          departmentRole: v('departmentRole'),
+          phone,
+          email,
+          interests: data.getAll('interests').map(String),
+          question: v('question'),
+          privacyConsent: true,
+          consentVersion: section.dataset.consentVersion ?? '',
+        },
+      };
+    };
+
+    const showErrors = (errors: Partial<Record<FieldKey, string>>) => {
+      summaryList.replaceChildren();
+      (Object.keys(fieldIds) as FieldKey[]).forEach((key) => {
+        const input = document.getElementById(fieldIds[key]) as HTMLInputElement;
+        const errEl = document.getElementById(`${fieldIds[key]}-err`)!;
+        const msg = errors[key];
+        input.setAttribute('aria-invalid', String(Boolean(msg)));
+        errEl.hidden = !msg;
+        errEl.textContent = msg ?? '';
+        if (msg) {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${fieldIds[key]}`;
+          a.textContent = msg;
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            input.focus();
+          });
+          li.append(a);
+          summaryList.append(li);
+        }
+      });
+      const keys = Object.keys(errors) as FieldKey[];
+      summary.hidden = keys.length === 0;
+      if (keys.length) {
+        // 첫 오류 필드로 focus (8.3)
+        (document.getElementById(fieldIds[keys[0]]) as HTMLElement).focus();
+      }
+    };
+
+    const setStatus = (text: string, tone: 'info' | 'error' = 'info') => {
+      statusEl.textContent = text;
+      statusEl.dataset.tone = tone;
+    };
+
+    const setSubmitting = (on: boolean) => {
+      submitting = on;
+      submit.disabled = on;
+      submit.textContent = on ? '신청 중…' : '참가 신청하기';
+      form.setAttribute('aria-busy', String(on));
+    };
+
+    const onSuccess = (confirmId?: string) => {
+      form.hidden = true;
+      done.hidden = false;
+      const row = modal.querySelector<HTMLElement>('[data-confirm-row]')!;
+      if (confirmId) {
+        modal.querySelector('[data-confirm-id]')!.textContent = confirmId;
+        row.hidden = false;
+      }
+      document.documentElement.dataset.registered = 'true';
+      document.dispatchEvent(new CustomEvent('registration:success'));
+      modal.showModal();
+    };
+
+    // 모달을 닫으면 focus를 완료 안내 영역으로 (8.3)
+    modal.addEventListener('close', () => {
+      document.dispatchEvent(new CustomEvent('modal:toggle', { detail: { open: false } }));
+      done.focus();
+    });
+    modal.addEventListener('toggle', () => {
+      if (modal.open) document.dispatchEvent(new CustomEvent('modal:toggle', { detail: { open: true } }));
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitting) return;
+
+      const { errors, payload } = validate();
+      showErrors(errors);
+      if (Object.keys(errors).length) {
+        setStatus('');
+        return;
+      }
+
+      if (!api) {
+        // 저장소 미연결: 저장된 것처럼 보이게 하지 않는다 (11.1)
+        setStatus('현재 온라인 사전등록 접수 준비 중으로 신청이 저장되지 않았습니다. 문의: md@tilon.com', 'error');
+        return;
+      }
+
+      idempotencyKey ??= crypto.randomUUID();
+      setSubmitting(true);
+      setStatus('신청 중입니다. 잠시만 기다려 주세요.');
+
+      try {
+        const res = await fetch(api, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, idempotencyKey }),
+        });
+        if (!res.ok) {
+          // 410 Gone = 접수 마감 (백엔드 계약 확정 시 함께 맞출 것)
+          if (res.status === 410) {
+            setStatus('사전등록이 마감되었습니다. 문의: md@tilon.com', 'error');
+            return;
+          }
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const body = (await res.json().catch(() => ({}))) as { id?: string; confirmationId?: string };
+        setStatus('');
+        onSuccess(body.confirmationId ?? body.id);
+      } catch {
+        // 입력값 유지, 같은 키로 재시도 가능
+        setStatus('신청을 완료하지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error');
+      } finally {
+        setSubmitting(false);
+      }
+    });
+  }
+</script>

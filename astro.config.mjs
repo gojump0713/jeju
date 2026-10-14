@@ -10,4 +10,6 @@ export default defineConfig({
   build: {
     assets: '_assets',
   },
+  // 하단 고정 CTA를 가리므로 개발 툴바 비활성화
+  devToolbar: { enabled: false },
 });

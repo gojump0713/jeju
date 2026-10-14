@@ -1,0 +1,85 @@
+---
+// S08 Footer (작업지시서 4.6, 7.2)
+// 지정 3문구를 그대로 사용. 이메일은 mailto. 화이트 CI. 개인정보처리방침 링크는 URL 확정 시 표시.
+// Copyright 대소문자를 임의로 변경하지 않는다.
+import { event, footer, privacyPolicyUrl } from '@/data/event';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <img
+      class="footer-ci"
+      src={`${base}assets/ci/tilonsoft-ci-white.png`}
+      alt="틸론소프트"
+      width="494"
+      height="96"
+      loading="lazy"
+    />
+    <div class="footer-text">
+      <p>
+        행사 문의 | <a href={`mailto:${event.contactEmail}`}>{event.contactEmail}</a>
+      </p>
+      <p>{footer.notice}</p>
+      {privacyPolicyUrl && (
+        <p>
+          <a class="footer-privacy" href={privacyPolicyUrl}>개인정보처리방침</a>
+        </p>
+      )}
+      <p class="footer-copy">{footer.copyright}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 56px 0;
+    background: #050e18;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.9375rem;
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .footer-ci {
+    width: auto;
+    height: 28px;
+  }
+  .footer-text p {
+    margin: 0 0 8px;
+    line-height: 1.7;
+  }
+  .footer-text a {
+    color: #fff;
+    text-underline-offset: 3px;
+  }
+  .footer-privacy {
+    font-weight: 700;
+  }
+  .footer-copy {
+    margin-top: 16px !important;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+  }
+  .site-footer :focus-visible {
+    outline-color: #8fc3ff;
+  }
+
+  @media (max-width: 767px) {
+    /* 하단 고정 CTA(약 80px) + safe area 만큼 여백 — 문구를 가리지 않도록 (7.4) */
+    .site-footer {
+      padding: 44px 0 calc(40px + 80px + env(safe-area-inset-bottom));
+    }
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .footer-ci {
+      height: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+// S06 Event Info · 오시는 길 (작업지시서 6장, 7.2)
+// Desktop 3열 + 지도 / Mobile 날짜 → 시간 → 장소 → 지도.
+// AI 생성 지도 금지. 주소·지도 링크·지도 embed는 운영팀 검증값(venueInfo)이 있을 때만 렌더링.
+import { event, venueInfo } from '@/data/event';
+---
+
+<section class="section event-info" aria-labelledby="event-info-title">
+  <div class="container">
+    <p class="section-label" aria-hidden="true">INFORMATION</p>
+    <h3 id="event-info-title" class="section-title">행사 정보 · 오시는 길</h3>
+
+    <dl class="info-grid">
+      <div class="info-item">
+        <dt>날짜</dt>
+        <dd>
+          <time datetime={event.date}>{event.dateLabelKo}</time>
+        </dd>
+      </div>
+      <div class="info-item">
+        <dt>시간</dt>
+        <dd>{event.timeLabel}</dd>
+      </div>
+      <div class="info-item">
+        <dt>장소</dt>
+        <dd>
+          {event.venue}
+          <span class="info-sub" lang="en">{event.venueEn}</span>
+          {venueInfo.address && <span class="info-sub">{venueInfo.address}</span>}
+        </dd>
+      </div>
+    </dl>
+
+    <p class="info-note">참가비 무료 · 사전등록을 완료하신 분에 한해 참석하실 수 있습니다.</p>
+
+    {
+      (venueInfo.mapEmbedUrl || venueInfo.mapUrl) && (
+        <div class="map-block">
+          {venueInfo.mapEmbedUrl && (
+            <iframe
+              class="map-frame"
+              src={venueInfo.mapEmbedUrl}
+              title={`${event.venue} 위치 지도`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            />
+          )}
+          {venueInfo.mapUrl && (
+            <a class="btn btn-outline" href={venueInfo.mapUrl} target="_blank" rel="noopener noreferrer">
+              지도에서 확인하기<span class="sr-only"> (새 창)</span>
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .event-info {
+    background: var(--surface-light);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 48px 0 0;
+  }
+  .info-item {
+    padding: 28px;
+    border-radius: var(--radius-card);
+    background: var(--surface-white);
+    border-top: 3px solid var(--brand-blue);
+  }
+  .info-item dt {
+    color: var(--brand-blue);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .info-item dd {
+    margin: 10px 0 0;
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .info-sub {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .info-note {
+    margin: 24px 0 0;
+    color: var(--text-secondary);
+  }
+
+  .map-block {
+    display: grid;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .map-frame {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    border: 0;
+    border-radius: var(--radius-card);
+    background: #dfe5eb;
+  }
+  .btn-outline {
+    justify-self: start;
+    border-color: var(--brand-blue);
+    color: var(--brand-blue);
+  }
+  .btn-outline:hover {
+    background: rgba(1, 94, 168, 0.06);
+  }
+
+  @media (max-width: 1199px) {
+    .info-grid {
+      gap: 16px;
+    }
+    .info-item {
+      padding: 24px;
+    }
+  }
+  @media (max-width: 767px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .info-item {
+      padding: 20px;
+    }
+    .map-frame {
+      aspect-ratio: 4 / 3;
+    }
+    .btn-outline {
+      justify-self: stretch;
+    }
+  }
+</style>

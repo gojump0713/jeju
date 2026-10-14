@@ -1,0 +1,164 @@
+---
+// S04 Program (작업지시서 4.4, 6장, 7.3)
+// 단일 DOM 순서 목록을 CSS로 reflow — Desktop은 시간열 + 설명열, Mobile은 카드형.
+// 폐회 행은 종료 시각·소요 시간을 표시하지 않는다. 색만으로 세션을 구분하지 않도록 유형 텍스트를 함께 제공.
+import { program } from '@/data/event';
+
+const kindLabel = { featured: '주요 세션', break: '', standard: '', closing: '' } as const;
+---
+
+<section id="program" class="section program" aria-labelledby="program-title">
+  <div class="container">
+    <p class="section-label" aria-hidden="true">PROGRAM</p>
+    <h3 id="program-title" class="section-title">행사 프로그램</h3>
+    <p class="section-lead">2026년 11월 5일(목) 10:00 – 15:00 · 메종글래드 제주 2F 제이드홀</p>
+
+    <ol class="program-list">
+      {
+        program.map((s) => (
+          <li class="session" data-kind={s.kind}>
+            <p class="session-time">
+              {s.end ? (
+                <>
+                  <time>{s.start}</time>
+                  <span aria-hidden="true">–</span>
+                  <span class="sr-only">부터</span>
+                  <time>{s.end}</time>
+                </>
+              ) : (
+                <time>{s.start}</time>
+              )}
+            </p>
+            {s.minutes && <p class="session-minutes">{s.minutes}분</p>}
+            <div class="session-body">
+              {kindLabel[s.kind] && <span class="sr-only">{kindLabel[s.kind]}: </span>}
+              <p class="session-title">
+                {s.kind === 'featured' && <span class="session-dot" aria-hidden="true" />}
+                {s.title}
+              </p>
+              {s.subtitle && <p class="session-subtitle">{s.subtitle}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .program {
+    background: var(--surface-white);
+  }
+
+  .program-list {
+    margin: 48px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 2px solid var(--text-primary);
+  }
+
+  /* Desktop·Tablet: 시간열 | 설명열 | 소요 */
+  .session {
+    display: grid;
+    grid-template-columns: 180px 1fr 72px;
+    grid-template-areas: 'time body min';
+    align-items: baseline;
+    gap: 8px 24px;
+    padding: 24px 8px;
+    border-bottom: 1px solid #dfe5eb;
+  }
+  .session p {
+    margin: 0;
+  }
+  .session-time {
+    grid-area: time;
+    display: flex;
+    gap: 6px;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .session-minutes {
+    grid-area: min;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .session-body {
+    grid-area: body;
+  }
+  .session-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+  .session-subtitle {
+    margin-top: 4px !important;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* 핵심 세션 accent: 점 + 굵기 + 배경 (색 외 단서 병행) */
+  .session[data-kind='featured'] {
+    background: linear-gradient(90deg, rgba(1, 94, 168, 0.06), transparent 70%);
+  }
+  .session[data-kind='featured'] .session-title {
+    font-weight: 800;
+  }
+  .session-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    transform: translateY(-2px);
+  }
+  .session[data-kind='break'] .session-title,
+  .session[data-kind='break'] .session-time {
+    color: var(--text-secondary);
+  }
+  .session[data-kind='closing'] {
+    border-bottom: 2px solid var(--text-primary);
+  }
+
+  @media (max-width: 1199px) {
+    .session {
+      grid-template-columns: 140px 1fr 56px;
+      gap: 6px 16px;
+    }
+  }
+
+  /* Mobile: 카드형 — 시간 → 제목 → 부제 (7.3) */
+  @media (max-width: 767px) {
+    .program-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 32px;
+      border-top: 0;
+    }
+    .session,
+    .session[data-kind='closing'] {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'time min'
+        'body body';
+      gap: 8px;
+      padding: 18px 20px;
+      border: 1px solid #dfe5eb;
+      border-radius: 16px;
+    }
+    .session[data-kind='featured'] {
+      border-color: rgba(1, 94, 168, 0.35);
+    }
+    .session-time {
+      font-size: 1rem;
+    }
+    .session-title {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

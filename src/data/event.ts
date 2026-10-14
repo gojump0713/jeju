@@ -19,6 +19,19 @@ export const event = {
   heroSubcopy: 'AI와 Cloud, 새로운 서비스의 시작을 만나다',
 } as const;
 
+// 운영팀 확인 후 기입 (6장 S06, 12장, 15.1). 추정 금지 — null이면 해당 UI를 렌더링하지 않는다.
+export const venueInfo: {
+  address: string | null; // 검증된 도로명 주소
+  mapUrl: string | null; // 검증된 지도 링크 (네이버·카카오 등 장소 페이지)
+  mapEmbedUrl: string | null; // 실제 지도 iframe src
+} = {
+  address: null,
+  mapUrl: null,
+  mapEmbedUrl: null,
+};
+
+export const privacyPolicyUrl: string | null = null; // TODO(운영팀): 개인정보처리방침 URL
+
 export const nav = [
   { label: '초대의 글', href: '#invitation' },
   { label: '행사 소개', href: '#about' },
@@ -79,6 +92,20 @@ export const interestOptions = [
   '공공DaaS',
   'AI/Cloud',
 ] as const;
+
+// 개인정보 수집·이용 동의 (8.2) — 운영팀 검토용 구성안. 확정되지 않은 값(null)은 페이지에 게시하지 않는다.
+export const consent = {
+  label: '[필수] 개인정보 수집 및 이용에 동의합니다.',
+  rows: [
+    { term: '수집·이용 목적', desc: '행사 사전등록 접수, 참석자 확인 및 행사 운영 안내' },
+    { term: '필수 수집 항목', desc: '이름, 소속, 연락처, 이메일' },
+    { term: '선택 수집 항목', desc: '부서/직책, 관심 서비스, 사전 질문 (입력하신 항목에 한함)' },
+    // TODO(운영팀): 정식 수집 주체(법인명)·보유 및 이용 기간·파기 시점 확정 후 기입 (15.1)
+    { term: '보유 및 이용 기간', desc: null },
+  ],
+  refusal:
+    '개인정보 수집 및 이용에 동의하지 않으실 수 있으며, 필수 정보 수집에 동의하지 않으시면 온라인 사전등록을 진행할 수 없습니다. 선택 항목은 입력하지 않아도 신청할 수 있습니다.',
+} as const;
 
 export const footer = {
   contact: '행사 문의 | md@tilon.com',

@@ -1,0 +1,130 @@
+<!doctype html>
+<!--
+  HF-I09 OG/SNS 공유 이미지 합성 템플릿 (작업지시서 5.6 HF-I09, 12장)
+  배경(HF-I09) + 실제 CI 레이어 + 행사명·날짜·장소 텍스트. AI 생성 텍스트·로고 사용 안 함.
+  scripts/make-og.mjs가 ?w=&h= 로 1200×630(OG), 1080×1080(SNS)을 렌더링한다.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: var(--w);
+        height: var(--h);
+        overflow: hidden;
+        background: #081523;
+        font-family: 'Pretendard Variable', sans-serif;
+        color: #fff;
+        word-break: keep-all;
+      }
+      .card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 72px;
+        background: url('bg.png') right bottom / cover no-repeat;
+      }
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(8, 21, 35, 0.72) 0%, rgba(8, 21, 35, 0.35) 55%, rgba(8, 21, 35, 0) 80%);
+      }
+      .card > * {
+        position: relative;
+      }
+      .ci {
+        position: absolute;
+        top: 56px;
+        left: 72px;
+        height: 34px;
+      }
+      .eyebrow {
+        margin: 0 0 14px;
+        color: #8fc3ff;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h1 {
+        margin: 0;
+        font-size: 74px;
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+      }
+      h1 .year {
+        color: #8fc3ff;
+      }
+      .meta {
+        margin: 30px 0 0;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+      .meta span {
+        display: block;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .badge {
+        align-self: flex-start;
+        display: inline-block;
+        margin-top: 26px;
+        padding: 10px 22px;
+        border-radius: 999px;
+        background: #015ea8;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      /* 정사각형(SNS): 위아래 여유를 쓰고 글자를 키움 */
+      .square .card {
+        justify-content: flex-end;
+        padding: 0 80px 110px;
+      }
+      .square .card::before {
+        background: linear-gradient(180deg, rgba(8, 21, 35, 0.75) 0%, rgba(8, 21, 35, 0.35) 55%, rgba(8, 21, 35, 0.55) 100%);
+      }
+      .square .ci {
+        top: 80px;
+        left: 80px;
+        height: 40px;
+      }
+      .square h1 {
+        font-size: 96px;
+      }
+      .square .meta {
+        font-size: 34px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img class="ci" src="ci-white.png" alt="" />
+      <p class="eyebrow">AI · CLOUD · JEJU</p>
+      <h1>TilonSoft<br />The Other Day <span class="year">2026</span></h1>
+      <p class="meta">2026.11.05 THU 10:00–15:00<span>메종글래드 제주 2F 제이드홀</span></p>
+      <span class="badge">무료 사전등록</span>
+    </div>
+    <script>
+      const q = new URLSearchParams(location.search);
+      const w = q.get('w') || 1200;
+      const h = q.get('h') || 630;
+      document.documentElement.style.setProperty('--w', w + 'px');
+      document.documentElement.style.setProperty('--h', h + 'px');
+      if (Number(w) === Number(h)) document.documentElement.classList.add('square');
+    </script>
+  </body>
+</html>

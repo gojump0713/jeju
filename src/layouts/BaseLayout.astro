@@ -6,7 +6,25 @@ const description =
   '2026년 11월 5일 제주에서 열리는 TilonSoft The Other Day 2026. DstationX, TheOther.Space 2.0, Kstory.ai, TheOther.Town 등 틸론소프트의 새로운 AI·Cloud 서비스를 만나보세요.';
 const ogDescription =
   '2026.11.05 10:00~15:00, 메종글래드 제주 2F 제이드홀. 틸론소프트의 AI·Cloud 서비스를 만나보세요. 무료 사전등록.';
-// canonical·og:image는 운영 HTTPS 주소와 HF-I09 완성본 확정 후 추가 (12장)
+// og:image는 절대 HTTPS URL (12장). canonical은 운영 도메인 확정 후 지정.
+const ogImage = new URL(`${import.meta.env.BASE_URL}assets/og/hf-i09-og-v01.jpg`, Astro.site).href;
+const ogImageAlt = 'TilonSoft The Other Day 2026 — 2026년 11월 5일 메종글래드 제주';
+
+// Event 구조화 데이터: 본문과 동일한 값만. endDate·도로명 주소·좌표·공식 URL은 추정하지 않음 (12장)
+const eventLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: event.name,
+  description,
+  startDate: event.startDate,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  isAccessibleForFree: true,
+  location: { '@type': 'Place', name: `${event.venue} (${event.venueEn})` },
+  organizer: { '@type': 'Organization', name: event.host },
+  image: [ogImage],
+  inLanguage: 'ko',
+};
 ---
 
 <!doctype html>
@@ -21,7 +39,16 @@ const ogDescription =
     <meta property="og:title" content={event.name} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:locale" content="ko_KR" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={event.name} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+    <script type="application/ld+json" set:html={JSON.stringify(eventLd)} />
     <meta name="theme-color" content="#081523" />
     <!-- Pretendard (SIL OFL 1.1) — dynamic subset으로 필요한 글리프만 로드 (3.3) -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />

@@ -11,4 +11,4 @@ HF-I05,TheOther.Space 2.0,S03_About,hf-i05-tos-v01.webp,1200x900,4:3,,29KB,5.6,g
 HF-I06,Kstory.ai,S03_About,hf-i06-kstory-v01.webp,1200x900,4:3,,35KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 03,c72ed64b-2b69-494c-a2ac-81f329261399,HF-I04 레퍼런스 · warm yellow accent
 HF-I07,TheOther.Town,S03_About,hf-i07-town-v01.webp,1200x900,4:3,,35KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 04,23d7cab7-14bd-4685-849b-77682e1efff8,HF-I04 레퍼런스 · orange accent
 HF-I08,AI x JEJU Wide Image,S05_AIJeju,hf-i08-aijeju-v01.webp,1920x1080,16:9,,198KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,V02 poster·모바일 정적 배경,d78a51b0-1971-4b40-adbd-df34f7975f9a,HF-V02 시작/끝 프레임
-HF-I09,OG / SNS Background,meta,hf-i09-og-v01.jpg,1200x630,1.91:1,,27KB(jpg),5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,OG 배경 (CI·행사정보 후합성),71d35ca5-4454-4642-a578-b405cf41f33a,배경 원판 · CI/행사정보 합성 및 SNS 1080 파생 필요
+HF-I09,OG / SNS Background,meta,og/hf-i09-og-v01.jpg,1200x630,1.91:1,,71KB(og) / 86KB(sns 1080),5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,OG 배경 (CI·행사정보 후합성),71d35ca5-4454-4642-a578-b405cf41f33a,CI·행사명·일시·장소 합성 완료 (scripts/make-og.mjs) · SNS 1080x1080 파생

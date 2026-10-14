@@ -1,0 +1,30 @@
+{
+  "name": "tilonsoft-the-other-day-2026",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TilonSoft The Other Day 2026 — 행사 원페이지 랜딩 (EVENT-001)",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "images": "node scripts/optimize-images.mjs",
+    "videos": "node scripts/optimize-videos.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "astro": "^7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  }
+}

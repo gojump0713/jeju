@@ -1,0 +1,239 @@
+---
+// S00 Header + O01 Mobile Menu (작업지시서 3.1, 7.2)
+// Hero 위에서는 투명 + 화이트 CI, 스크롤 후 흰 배경 + 컬러 CI. 로고 박스 크기는 고정해 전환 시 움직이지 않게 한다.
+import { event, nav } from '@/data/event';
+
+const base = import.meta.env.BASE_URL;
+const menu = nav.filter((item) => item.href !== '#registration');
+---
+
+<header class="site-header" data-header data-solid="false">
+  <div class="header-inner">
+    <a class="brand" href="#top" aria-label={`틸론소프트 — ${event.name} 맨 위로`}>
+      <img class="logo logo-white" src={`${base}assets/ci/tilonsoft-ci-white.png`} alt="틸론소프트" width="494" height="96" />
+      <img class="logo logo-color" src={`${base}assets/ci/tilonsoft-ci-color.png`} alt="" width="502" height="96" aria-hidden="true" />
+    </a>
+
+    <nav class="nav-desktop" aria-label="주 메뉴">
+      <ul>
+        {menu.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a class="btn btn-primary btn-sm" href="#registration" data-cta="header">참가신청</a></li>
+      </ul>
+    </nav>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <span class="sr-only" data-menu-label>메뉴 열기</span>
+      <span class="menu-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <nav id="mobile-menu" class="nav-mobile" aria-label="모바일 메뉴" hidden data-menu>
+    <ul>
+      {nav.map((item) => <li><a href={item.href} data-menu-link>{item.label}</a></li>)}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    height: var(--header-h);
+    color: #fff;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  }
+  .site-header[data-solid='true'],
+  .site-header[data-menu-open='true'] {
+    background: var(--surface-white);
+    color: var(--text-primary);
+    box-shadow: 0 1px 0 rgba(23, 37, 53, 0.08);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 100%;
+    max-width: calc(var(--content-max) + var(--gutter) * 2);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  /* 고정 로고 박스: 보이는 높이 Desktop 32px / Mobile 26px (3.1) */
+  .brand {
+    position: relative;
+    display: block;
+    flex: none;
+    height: 32px;
+    aspect-ratio: 502 / 96;
+  }
+  .logo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left center;
+    transition: opacity 0.25s ease;
+  }
+  .logo-color {
+    opacity: 0;
+  }
+  .site-header[data-solid='true'] .logo-white,
+  .site-header[data-menu-open='true'] .logo-white {
+    opacity: 0;
+  }
+  .site-header[data-solid='true'] .logo-color,
+  .site-header[data-menu-open='true'] .logo-color {
+    opacity: 1;
+  }
+
+  .nav-desktop ul {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav-desktop a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .nav-desktop a:not(.btn):hover {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .menu-icon,
+  .menu-icon::before,
+  .menu-icon::after {
+    display: block;
+    width: 22px;
+    height: 2px;
+    margin: 0 auto;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .menu-icon {
+    position: relative;
+  }
+  .menu-icon::before,
+  .menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+  .menu-icon::before {
+    top: -7px;
+  }
+  .menu-icon::after {
+    top: 7px;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-icon {
+    background: transparent;
+  }
+  .menu-toggle[aria-expanded='true'] .menu-icon::before {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-icon::after {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-mobile {
+    background: var(--surface-white);
+    border-top: 1px solid rgba(23, 37, 53, 0.08);
+    box-shadow: 0 12px 24px rgba(8, 21, 35, 0.12);
+  }
+  .nav-mobile ul {
+    margin: 0;
+    padding: 8px var(--gutter) 16px;
+    list-style: none;
+  }
+  .nav-mobile a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(23, 37, 53, 0.08);
+  }
+  .nav-mobile li:last-child a {
+    color: var(--brand-blue);
+    border-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    .brand {
+      height: 26px;
+    }
+    .nav-desktop {
+      display: none;
+    }
+    .menu-toggle {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const label = document.querySelector<HTMLElement>('[data-menu-label]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (header && toggle && label && menu) {
+    // 스크롤 상태: Hero 하단 근처를 지나면 solid
+    const updateSolid = () => {
+      header.dataset.solid = String(window.scrollY > 24);
+    };
+    updateSolid();
+    window.addEventListener('scroll', updateSolid, { passive: true });
+
+    const setOpen = (open: boolean, returnFocus = false) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? '메뉴 닫기' : '메뉴 열기';
+      menu.hidden = !open;
+      header.dataset.menuOpen = String(open);
+      document.dispatchEvent(new CustomEvent('menu:toggle', { detail: { open } }));
+      if (returnFocus) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    menu.querySelectorAll('[data-menu-link]').forEach((link) =>
+      link.addEventListener('click', () => setOpen(false)),
+    );
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) setOpen(false, true);
+    });
+    window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+      if (e.matches && !menu.hidden) setOpen(false);
+    });
+  }
+</script>

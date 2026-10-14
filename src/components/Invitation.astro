@@ -1,0 +1,117 @@
+---
+// S02 Invitation (작업지시서 4.2, 6장, 7.2)
+// 흰 배경 + 초청문 전문·서명. HF-I02는 10~20% 정도의 장식 배경 — 가독성을 해치면 제거.
+// Desktop 제목:본문 4:8 / Tablet 제목 위·본문 아래 / Mobile 1열 전문 노출
+const hf = `${import.meta.env.BASE_URL}assets/hf`;
+---
+
+<section id="invitation" class="section invitation" aria-labelledby="invitation-title">
+  <img
+    class="invitation-bg"
+    src={`${hf}/hf-i02-invitation-v01-1200w.webp`}
+    srcset={`${hf}/hf-i02-invitation-v01-1200w.webp 1200w, ${hf}/hf-i02-invitation-v01.webp 1800w`}
+    sizes="100vw"
+    width="1800"
+    height="1200"
+    alt=""
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="container invitation-grid">
+    <div class="invitation-head">
+      <p class="section-label" aria-hidden="true">INVITATION</p>
+      <h2 id="invitation-title" class="section-title">초대의 글</h2>
+    </div>
+
+    <div class="invitation-body">
+      <p>안녕하십니까.</p>
+      <p>
+        틸론소프트가 주최하는 <strong>「TilonSoft The Other Day 2026」에 여러분을 정중히 초대합니다.</strong>
+      </p>
+      <p>
+        AI 기술은 이제 단순한 기술의 진화를 넘어 우리의 업무 방식과 교육, 창작, 그리고 디지털 환경 전반을 새롭게
+        변화시키고 있습니다.
+      </p>
+      <p>
+        틸론소프트는 이러한 변화 속에서 클라우드·가상화 기술과 AI 역량을 기반으로 한 새로운 서비스와 미래의 가능성을
+        여러분과 함께 나누고자 이번 자리를 마련했습니다.
+      </p>
+      <p>
+        이번 행사에서는 차세대 가상화 플랫폼 <strong>DstationX</strong>, DstationX 엔진 기반 서비스형 DaaS{' '}
+        <strong>TheOther.Space 2.0</strong>, AI 창작·교육 서비스 <strong>Kstory.ai</strong>, 소버린 AI·GPU 가상화
+        서비스 <strong>TheOther.Town</strong> 등 새로운 기술과 서비스를 소개합니다.
+      </p>
+      <p>
+        또한 실제 고객 사례와 기술 전략, AI 서비스가 제주 산업에 가져올 변화와 가능성을 함께 논의하며 새로운
+        비즈니스와 협력의 기회를 모색하고자 합니다.
+      </p>
+      <p>
+        이번 행사가 새로운 기술을 경험하는 자리를 넘어 서로의 아이디어와 가능성을 연결하고 함께 새로운 기회를
+        만들어가는 뜻깊은 시간이 되기를 기대합니다.
+      </p>
+      <p>
+        바쁘신 일정 가운데 귀한 걸음 하시어 틸론소프트가 준비한 새로운 도전과 변화의 순간을 함께해 주시기 바랍니다.
+      </p>
+      <p>감사합니다.</p>
+      <p class="invitation-sign"><strong>틸론소프트 드림</strong></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .invitation {
+    position: relative;
+    background: var(--surface-white);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  /* 장식 배경: 우하단 현무암만 은은하게 보이도록 낮은 불투명도 */
+  .invitation-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right bottom;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .invitation-grid {
+    display: grid;
+    grid-template-columns: 4fr 8fr;
+    gap: 24px;
+  }
+  .invitation-head {
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+
+  .invitation-body {
+    max-width: 720px;
+    font-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+    line-height: 1.85;
+  }
+  .invitation-body p {
+    margin: 0 0 1.1em;
+  }
+  .invitation-body strong {
+    font-weight: 700;
+  }
+  .invitation-sign {
+    margin-top: 2em !important;
+    font-size: 1.125em;
+  }
+
+  @media (max-width: 1199px) {
+    .invitation-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .invitation-head {
+      position: static;
+    }
+  }
+</style>

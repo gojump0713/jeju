@@ -1,0 +1,42 @@
+---
+// 섹션 컴포넌트는 순차 구현 중 (11.1). Header·Hero·Invitation·About 완료, 나머지는 anchor 골격만 유지.
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Hero from '@/components/Hero.astro';
+import Invitation from '@/components/Invitation.astro';
+import About from '@/components/About.astro';
+import { event, program, footer } from '@/data/event';
+---
+
+<BaseLayout>
+  <div id="top"></div>
+  <Header />
+
+  <main id="main" tabindex="-1">
+    <Hero />
+    <Invitation />
+
+    <About>
+      <section id="program" class="section container" aria-labelledby="program-title">
+        <h3 id="program-title">행사 프로그램</h3>
+        <ol>
+          {program.map((s) => (
+            <li>
+              <time>{s.start}{s.end && `–${s.end}`}</time> {s.title}{s.subtitle && ` – ${s.subtitle}`}
+            </li>
+          ))}
+        </ol>
+      </section>
+    </About>
+
+    <section id="registration" class="section container" aria-labelledby="registration-title">
+      <h2 id="registration-title" tabindex="-1">{event.name}에 함께해 주세요.</h2>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p><a href={`mailto:${event.contactEmail}`}>{footer.contact}</a></p>
+    <p>{footer.notice}</p>
+    <p>{footer.copyright}</p>
+  </footer>
+</BaseLayout>

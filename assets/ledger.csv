@@ -1,0 +1,14 @@
+id,name,location,file,size,ratio,duration,filesize,prompt_ref,model,created,review_status,poster,usage,job_id,notes
+HF-V01,Hero Main Loop,S01_Hero,hf-v01-hero-desktop-v01.mp4,1920x1080,16:9,6-8s,2.32MB,5.3,minimax_h3 (2K 8s; start=end=HF-V01-P),2026-10-14,review,HF-V01-P,Desktop Hero 배경 영상,99332fe7-e991-4565-8b61-747cb89e0789,24fps · 첫/끝 프레임 SSIM 0.974 · 오디오 제거
+HF-V01-P,Hero Desktop Poster,S01_Hero,hf-v01-hero-desktop-poster-v01.webp,1920x1080,16:9,,76KB,5.3 (still),gpt_image_2_5 (2k/high),2026-10-14,review,,HF-V01 첫 프레임 poster,29da7165-349c-4d8d-8dfe-ad22c829dcd0,시안 B 선택 · HF-V01 시작/끝 프레임
+HF-V02,AI meets JEJU Loop,S05_AIJeju,hf-v02-aijeju-v01.mp4,1920x1080,16:9,5-6s,2.40MB,5.4,minimax_h3 (2K 6s; start=end=HF-I08),2026-10-14,review,HF-I08,AI meets JEJU 배경 영상,d93c6545-8f86-49df-a46d-e0358d84e094,24fps · 6.58s · SSIM 0.941 · 오디오 제거
+HF-V03,Mobile Hero Loop,S01_Hero,hf-v03-hero-mobile-v01.mp4,720x1280 (master 1440x2560),9:16,5-6s,0.69MB,5.5,minimax_h3 (2K 6s; start=end=HF-I01),2026-10-14,review,HF-I01,Mobile Hero 배경 영상,202d9a04-ae30-44c3-97d2-4fc12fb03845,24fps · 6.58s · SSIM 0.953 · 오디오 제거
+HF-I01,Mobile Hero Poster,S01_Hero,hf-i01-hero-mobile-poster-v01.webp,1080x1920,9:16,,54KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,모바일 기본 이미지·V03 fallback,10eaf265-907d-42f6-94fb-49def5ac46b3,시안 B 선택
+HF-I02,Invitation Background,S02_Invitation,hf-i02-invitation-v01.webp,1800x1200,3:2,,43KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,초대글 장식 배경,96d17b23-767a-4350-b0a4-7af67ec0464c,원본 3:2(2048x1360)
+HF-I03,About Main,S03_About,hf-i03-about-v01.webp,1920x1080,16:9,,54KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,행사 소개 대표 이미지,4fba75da-2f59-4d7d-884c-a1333be2d9ee,
+HF-I04,DstationX,S03_About,hf-i04-dstationx-v01.webp,1200x900,4:3,,26KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 01,de0a784f-611e-4b7b-b3c1-dce7435084ba,시리즈 기준 룩(시안 B 선택). 시안 A는 masters/cand-a 보관
+HF-I05,TheOther.Space 2.0,S03_About,hf-i05-tos-v01.webp,1200x900,4:3,,29KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 02,e86facb8-32e5-472a-9eff-1b5ab9664f41,HF-I04 레퍼런스 · green accent
+HF-I06,Kstory.ai,S03_About,hf-i06-kstory-v01.webp,1200x900,4:3,,35KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 03,c72ed64b-2b69-494c-a2ac-81f329261399,HF-I04 레퍼런스 · warm yellow accent
+HF-I07,TheOther.Town,S03_About,hf-i07-town-v01.webp,1200x900,4:3,,35KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,서비스 카드 04,23d7cab7-14bd-4685-849b-77682e1efff8,HF-I04 레퍼런스 · orange accent
+HF-I08,AI x JEJU Wide Image,S05_AIJeju,hf-i08-aijeju-v01.webp,1920x1080,16:9,,198KB,5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,V02 poster·모바일 정적 배경,d78a51b0-1971-4b40-adbd-df34f7975f9a,HF-V02 시작/끝 프레임
+HF-I09,OG / SNS Background,meta,hf-i09-og-v01.jpg,1200x630,1.91:1,,27KB(jpg),5.6,gpt_image_2_5 (2k/high),2026-10-14,review,,OG 배경 (CI·행사정보 후합성),71d35ca5-4454-4642-a578-b405cf41f33a,배경 원판 · CI/행사정보 합성 및 SNS 1080 파생 필요

@@ -1,0 +1,346 @@
+---
+// S01 Hero (작업지시서 4.1, 5.3, 7.2, 9.1, 9.2)
+// - 첫 렌더는 poster(Desktop HF-V01-P / Mobile HF-I01). 영상 src는 JS가 조건 확인 후에만 부여한다.
+// - Desktop(≥768): HF-V01. Mobile: 기본 정지 이미지, 충분한 환경에서만 HF-V03 (점진적 향상).
+// - reduced motion·Data Saver면 영상 요청 생략. 재생 실패 시 poster 유지. 사용자가 정지하면 자동 재시작하지 않음.
+import { event } from '@/data/event';
+
+const base = import.meta.env.BASE_URL;
+const hf = `${base}assets/hf`;
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <div class="hero-media" aria-hidden="true">
+    <picture>
+      <source
+        media="(max-width: 767px)"
+        srcset={`${hf}/hf-i01-hero-mobile-poster-v01-720w.webp 720w, ${hf}/hf-i01-hero-mobile-poster-v01.webp 1080w`}
+        sizes="100vw"
+        width="1080"
+        height="1920"
+      />
+      <img
+        class="hero-poster"
+        src={`${hf}/hf-v01-hero-desktop-poster-v01.webp`}
+        srcset={`${hf}/hf-v01-hero-desktop-poster-v01-1280w.webp 1280w, ${hf}/hf-v01-hero-desktop-poster-v01.webp 1920w`}
+        sizes="100vw"
+        width="1920"
+        height="1080"
+        alt=""
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+    <video
+      class="hero-video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      tabindex="-1"
+      data-hero-video
+      data-src-desktop={`${hf}/hf-v01-hero-desktop-v01.mp4`}
+      data-src-mobile={`${hf}/hf-v03-hero-mobile-v01.mp4`}
+    ></video>
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-content">
+    <h1 id="hero-title" class="hero-title">
+      <span class="sr-only">{event.name}</span>
+      <span aria-hidden="true">THE OTHER DAY<br /><span class="hero-year">2026</span></span>
+    </h1>
+    <p class="hero-subcopy">{event.heroSubcopy}</p>
+    <dl class="hero-meta">
+      <div>
+        <dt class="sr-only">일시</dt>
+        <dd><time datetime={event.startDate}>{event.dateLabel}</time> · {event.timeLabel}</dd>
+      </div>
+      <div>
+        <dt class="sr-only">장소</dt>
+        <dd>{event.venue}</dd>
+      </div>
+      <div>
+        <dt class="sr-only">주최</dt>
+        <dd>주최 {event.host}</dd>
+      </div>
+    </dl>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="#registration" data-cta="hero" data-hero-cta>참가신청하기</a>
+      <a class="btn btn-ghost btn-lg" href="#program">프로그램 보기</a>
+    </div>
+  </div>
+
+  <button class="video-toggle" type="button" hidden aria-pressed="false" data-video-toggle>
+    <span class="video-toggle-icon" aria-hidden="true"></span>
+    <span data-video-toggle-label>배경 영상 일시정지</span>
+  </button>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: max(800px, 100svh);
+    max-height: 960px;
+    padding: calc(var(--header-h) + 48px) var(--gutter) 96px;
+    color: #fff;
+    background: var(--surface-dark);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero-media,
+  .hero-media picture,
+  .hero-poster,
+  .hero-video,
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-media {
+    z-index: -1;
+  }
+  .hero-poster,
+  .hero-video {
+    object-fit: cover;
+    object-position: center bottom;
+  }
+  .hero-video {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .hero-video[data-playing='true'] {
+    opacity: 1;
+  }
+  /* dark overlay 35~50%에서 시작 (5.3). 상단은 Header·제목 대비를 위해 조금 더 어둡게 */
+  .hero-overlay {
+    background:
+      linear-gradient(180deg, rgba(8, 21, 35, 0.55) 0%, rgba(8, 21, 35, 0.3) 45%, rgba(8, 21, 35, 0.45) 100%);
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: clamp(2.375rem, 1.2rem + 5.6vw, 6rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .hero-year {
+    color: #8fc3ff;
+  }
+
+  .hero-subcopy {
+    margin: 24px 0 0;
+    font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .hero-meta {
+    margin: 28px 0 0;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    line-height: 1.7;
+  }
+  .hero-meta dd {
+    margin: 0;
+  }
+  .hero-meta div:first-child dd {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .hero-meta div:last-child dd {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 40px;
+  }
+
+  .video-toggle {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(8, 21, 35, 0.55);
+    color: #fff;
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  .video-toggle:hover {
+    background: rgba(8, 21, 35, 0.8);
+  }
+  .video-toggle-icon {
+    width: 10px;
+    height: 12px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+  }
+  .video-toggle[aria-pressed='true'] .video-toggle-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent currentColor;
+  }
+
+  /* Desktop: 영상 하단의 빛줄기와 CTA가 겹치지 않도록 내용을 상단 쪽에 배치하고 하단을 더 어둡게 (5.3) */
+  @media (min-width: 1200px) {
+    .hero {
+      align-items: flex-start;
+      padding-top: calc(var(--header-h) + clamp(48px, 8vh, 120px));
+    }
+    .hero-subcopy {
+      margin-top: 20px;
+    }
+    .hero-meta {
+      margin-top: 24px;
+    }
+    .hero-actions {
+      margin-top: 32px;
+    }
+    .hero-overlay {
+      background: linear-gradient(
+        180deg,
+        rgba(8, 21, 35, 0.55) 0%,
+        rgba(8, 21, 35, 0.3) 40%,
+        rgba(8, 21, 35, 0.5) 72%,
+        rgba(8, 21, 35, 0.6) 100%
+      );
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .hero {
+      min-height: max(680px, 100svh);
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      align-items: flex-end;
+      min-height: 100svh;
+      padding-top: calc(var(--header-h) + 32px);
+      padding-bottom: 88px;
+    }
+    .hero-actions {
+      flex-direction: column;
+    }
+    .hero-actions .btn {
+      width: 100%;
+    }
+    .video-toggle {
+      bottom: 20px;
+    }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-video-toggle]');
+  const toggleLabel = document.querySelector<HTMLElement>('[data-video-toggle-label]');
+
+  type NetworkInfo = { saveData?: boolean; effectiveType?: string };
+
+  if (hero && video && toggle && toggleLabel) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const desktop = window.matchMedia('(min-width: 768px)');
+    const connection = (navigator as Navigator & { connection?: NetworkInfo }).connection;
+
+    let userPaused = false;
+    let inView = true;
+    let loadedSrc = '';
+
+    const pickSource = (): string => {
+      if (reducedMotion.matches) return '';
+      if (connection?.saveData) return '';
+      if (desktop.matches) return video.dataset.srcDesktop ?? '';
+      // 모바일은 충분한 환경에서만 영상 (9.1 점진적 향상)
+      if (connection?.effectiveType === '4g') return video.dataset.srcMobile ?? '';
+      return '';
+    };
+
+    const setToggle = (paused: boolean) => {
+      toggle.setAttribute('aria-pressed', String(paused));
+      toggleLabel.textContent = paused ? '배경 영상 재생' : '배경 영상 일시정지';
+    };
+
+    const unload = () => {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      video.dataset.playing = 'false';
+      loadedSrc = '';
+      toggle.hidden = true;
+    };
+
+    const tryPlay = () => {
+      if (userPaused || !inView || document.hidden || !loadedSrc) return;
+      video.play().catch(() => {
+        // 자동재생 거부·오류: poster 유지
+        video.dataset.playing = 'false';
+      });
+    };
+
+    const sync = () => {
+      const src = pickSource();
+      if (!src) {
+        unload();
+        return;
+      }
+      if (src !== loadedSrc) {
+        video.src = src;
+        loadedSrc = src;
+        toggle.hidden = false;
+        setToggle(userPaused);
+      }
+      tryPlay();
+    };
+
+    video.addEventListener('playing', () => (video.dataset.playing = 'true'));
+    video.addEventListener('error', unload);
+
+    toggle.addEventListener('click', () => {
+      userPaused = !userPaused;
+      setToggle(userPaused);
+      if (userPaused) video.pause();
+      else tryPlay();
+    });
+
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (inView) tryPlay();
+      else video.pause();
+    }).observe(hero);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) video.pause();
+      else tryPlay();
+    });
+
+    reducedMotion.addEventListener('change', sync);
+    desktop.addEventListener('change', sync);
+    sync();
+  }
+</script>

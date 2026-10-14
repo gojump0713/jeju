@@ -1,0 +1,27 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# env (비밀값은 커밋 금지 — .env.example만 커밋)
+.env
+.env.*
+!.env.example
+
+# Higgsfield 원본 마스터 (대용량, 웹 경로에 연결 금지 — 작업지시서 9.1)
+assets/masters/*
+!assets/masters/.gitkeep
+
+# 내부 작업지시서·화면설계서 (비공개 유지)
+TilonSoft_The_Other_Day_2026_*.md
+
+# logs / OS / editor
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/

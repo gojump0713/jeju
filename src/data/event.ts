@@ -77,7 +77,7 @@ export const program: Session[] = [
   { start: '11:50', end: '12:50', minutes: 60, title: '오찬 및 네트워킹', kind: 'standard' },
   { start: '12:50', end: '13:00', minutes: 10, title: '축사', kind: 'standard' },
   { start: '13:00', end: '13:20', minutes: 20, title: '구축에서 구독으로', subtitle: '틸론은 왜 AI 서비스를 만들었는가', kind: 'standard' },
-  { start: '13:20', end: '14:00', minutes: 40, title: 'AI와 제주', subtitle: 'AI서비스가 제주 산업에 미치는 영향', kind: 'featured' },
+  { start: '13:20', end: '14:00', minutes: 40, title: '제주 산업 발전을 위한 AI 모델 서비스의 방향', kind: 'featured' },
   { start: '14:00', end: '14:20', minutes: 20, title: 'AI 동화 창작 서비스 Kstory.ai 소개', kind: 'standard' },
   { start: '14:20', end: '14:40', minutes: 20, title: 'KT클라우드 공공DaaS 소개', kind: 'standard' },
   { start: '14:40', end: '15:00', minutes: 20, title: '소버린 AI · GPU 가상화 서비스 TheOther.Town 소개', kind: 'standard' },

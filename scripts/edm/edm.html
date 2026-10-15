@@ -1,0 +1,460 @@
+<!doctype html>
+<!--
+  eDM 통이미지 합성 템플릿
+  scripts/make-edm.mjs가 src/data/event.ts 값을 window.EDM으로 주입한 뒤 600px 폭 × 2배율로 렌더링한다.
+  일정·장소·프로그램은 사이트와 같은 원본(event.ts)을 쓰므로 여기에 직접 적지 않는다.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <style>
+      :root {
+        --brand-blue: #015ea8;
+        --brand-orange: #ec6702;
+        --brand-yellow: #fdd704;
+        --brand-green: #049145;
+        --surface-dark: #081523;
+        --surface-light: #f4f7fa;
+        --text-primary: #172535;
+        --text-secondary: #536273;
+        --sky: #8fc3ff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 600px;
+        background: #fff;
+        font-family: 'Pretendard Variable', sans-serif;
+        color: var(--text-primary);
+        word-break: keep-all;
+        -webkit-font-smoothing: antialiased;
+      }
+      p,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      /* Hero */
+      .hero {
+        position: relative;
+        height: 430px;
+        padding: 40px 40px 36px;
+        color: #fff;
+        background: var(--surface-dark) url('bg.webp') 62% center / cover no-repeat;
+        display: flex;
+        flex-direction: column;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(8, 21, 35, 0.82) 0%,
+            rgba(8, 21, 35, 0.45) 60%,
+            rgba(8, 21, 35, 0.1) 100%
+          ),
+          linear-gradient(0deg, rgba(8, 21, 35, 0.55) 0%, rgba(8, 21, 35, 0) 45%);
+      }
+      .hero > * {
+        position: relative;
+      }
+      .hero .ci {
+        height: 26px;
+        align-self: flex-start;
+      }
+      .eyebrow {
+        margin-top: 34px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        color: var(--sky);
+      }
+      .hero h1 {
+        margin-top: 12px;
+        font-size: 50px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+      .hero h1 .year {
+        display: block;
+        margin-top: 4px;
+        color: var(--sky);
+      }
+      .hero .sub {
+        margin-top: 14px;
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .hero .meta {
+        margin-top: auto;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+      .hero .meta span {
+        display: block;
+        font-size: 15px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .section {
+        padding: 44px 40px;
+      }
+      .label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        color: var(--brand-blue);
+      }
+      .title {
+        margin-top: 10px;
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1.35;
+        letter-spacing: -0.02em;
+      }
+
+      /* Invitation */
+      .letter {
+        margin-top: 22px;
+        font-size: 14.5px;
+        line-height: 1.85;
+        color: #33404e;
+      }
+      .letter p + p {
+        margin-top: 12px;
+      }
+      .letter strong {
+        color: var(--text-primary);
+        font-weight: 700;
+      }
+      .sign {
+        margin-top: 18px;
+        text-align: right;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      /* Services */
+      .about {
+        background: var(--surface-light);
+      }
+      .lead {
+        margin-top: 10px;
+        font-size: 14.5px;
+        line-height: 1.7;
+        color: var(--text-secondary);
+      }
+      .services {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .svc {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        border-bottom: 3px solid var(--accent);
+      }
+      .svc img {
+        display: block;
+        width: 100%;
+        height: 112px;
+        object-fit: cover;
+      }
+      .svc .body {
+        padding: 12px 14px 14px;
+      }
+      .svc .order {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        color: var(--text-secondary);
+      }
+      .svc h3 {
+        margin-top: 4px;
+        font-size: 16px;
+        font-weight: 800;
+      }
+      .svc .desc {
+        margin-top: 3px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+      }
+      .blue {
+        --accent: var(--brand-blue);
+      }
+      .green {
+        --accent: var(--brand-green);
+      }
+      .yellow {
+        --accent: var(--brand-yellow);
+      }
+      .orange {
+        --accent: var(--brand-orange);
+      }
+
+      /* Program */
+      .program-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+      .program-head .date {
+        font-size: 12.5px;
+        color: var(--text-secondary);
+      }
+      table {
+        width: 100%;
+        margin-top: 18px;
+        border-collapse: collapse;
+        font-size: 13.5px;
+      }
+      thead th {
+        background: var(--surface-dark);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-align: left;
+        padding: 10px 14px;
+      }
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #e3e8ee;
+        vertical-align: top;
+        line-height: 1.5;
+      }
+      td.time {
+        width: 112px;
+        white-space: nowrap;
+        font-weight: 700;
+        color: var(--brand-blue);
+        font-variant-numeric: tabular-nums;
+      }
+      td .subtitle {
+        display: block;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      tr.featured td {
+        background: #eaf3fc;
+      }
+      tr.featured td.title-cell {
+        font-weight: 700;
+      }
+      tr.break td {
+        background: var(--surface-light);
+      }
+
+      /* Info + CTA */
+      .info {
+        margin-top: 26px;
+        border: 1px solid #dbe3ec;
+        border-radius: 12px;
+        padding: 6px 20px;
+      }
+      .info dl {
+        margin: 0;
+        display: grid;
+        grid-template-columns: 64px 1fr;
+      }
+      .info dt,
+      .info dd {
+        margin: 0;
+        padding: 11px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #edf1f5;
+      }
+      .info dt {
+        font-weight: 700;
+        color: var(--text-secondary);
+      }
+      .info dd {
+        font-weight: 600;
+      }
+      .info dt:last-of-type,
+      .info dd:last-of-type {
+        border-bottom: 0;
+      }
+      .cta {
+        display: block;
+        margin-top: 28px;
+        padding: 18px 0;
+        border-radius: 999px;
+        background: var(--brand-blue);
+        color: #fff;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      .cta-note {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 12.5px;
+        color: var(--text-secondary);
+      }
+
+      /* Footer */
+      .footer {
+        padding: 26px 40px 30px;
+        background: var(--surface-dark);
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .footer .ci {
+        height: 18px;
+        margin-bottom: 14px;
+        display: block;
+      }
+      .footer strong {
+        color: #fff;
+        font-weight: 700;
+      }
+      .footer .copy {
+        margin-top: 10px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <img class="ci" src="ci-white.png" alt="" />
+      <p class="eyebrow">OFFICIAL INVITATION · JEJU</p>
+      <h1>THE OTHER DAY<span class="year">2026</span></h1>
+      <p class="sub" data-text="heroSubcopy"></p>
+      <p class="meta"><b data-text="when"></b><span data-text="venue"></span></p>
+    </header>
+
+    <section class="section">
+      <p class="label">YOU ARE INVITED</p>
+      <h2 class="title">새로운 가능성의 자리에 초대합니다.</h2>
+      <div class="letter">
+        <p>
+          안녕하십니까.<br />틸론소프트가 주최하는
+          <strong>「TilonSoft The Other Day 2026」</strong>에 여러분을 정중히 초대합니다.
+        </p>
+        <p>
+          AI 기술은 우리의 업무 방식과 교육, 창작, 그리고 디지털 환경 전반을 새롭게 변화시키고
+          있습니다. 틸론소프트는 클라우드·가상화 기술과 AI 역량을 기반으로 한 새로운 서비스와 미래의
+          가능성을 여러분과 함께 나누고자 합니다.
+        </p>
+        <p>
+          이번 행사에서는 차세대 가상화 플랫폼 <strong>DstationX</strong>, 서비스형 DaaS
+          <strong>TheOther.Space 2.0</strong>, AI 창작·교육 서비스 <strong>Kstory.ai</strong>,
+          소버린 AI·GPU 가상화 서비스 <strong>TheOther.Town</strong>을 소개하고, AI 서비스가 제주
+          산업에 가져올 변화와 가능성을 함께 논의합니다.
+        </p>
+        <p>
+          바쁘신 일정 가운데 귀한 걸음 하시어 틸론소프트가 준비한 새로운 도전과 변화의 순간을 함께해
+          주시기 바랍니다.
+        </p>
+      </div>
+      <p class="sign">틸론소프트 드림</p>
+    </section>
+
+    <section class="section about">
+      <p class="label">CLOUD TO AI · INFRASTRUCTURE TO SERVICE</p>
+      <h2 class="title">구축형 인프라에서 서비스형 AI·Cloud로</h2>
+      <p class="lead">틸론소프트가 준비한 새로운 변화가 제주에서 시작됩니다.</p>
+      <div class="services" id="services"></div>
+    </section>
+
+    <section class="section">
+      <div class="program-head">
+        <div>
+          <p class="label">PROGRAM</p>
+          <h2 class="title">행사 프로그램</h2>
+        </div>
+        <p class="date" data-text="programDate"></p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>TIME</th>
+            <th>PROGRAM</th>
+          </tr>
+        </thead>
+        <tbody id="program"></tbody>
+      </table>
+
+      <div class="info">
+        <dl>
+          <dt>일시</dt>
+          <dd data-text="whenKo"></dd>
+          <dt>장소</dt>
+          <dd data-text="venue"></dd>
+          <dt>주최</dt>
+          <dd data-text="host"></dd>
+          <dt>참가비</dt>
+          <dd data-text="fee"></dd>
+        </dl>
+      </div>
+      <p class="cta">사전등록 바로가기 →</p>
+      <p class="cta-note" data-text="notice"></p>
+    </section>
+
+    <footer class="footer">
+      <img class="ci" src="ci-white.png" alt="" />
+      <p><strong data-text="contact"></strong></p>
+      <p class="copy" data-text="copyright"></p>
+    </footer>
+
+    <script>
+      const { event, services, program, footer } = window.EDM;
+      const range = event.timeLabel.replace('–', '~');
+      const text = {
+        heroSubcopy: event.heroSubcopy,
+        when: `${event.dateLabel} · ${event.timeLabel}`,
+        whenKo: `${event.dateLabelKo} ${range}`,
+        programDate: `${event.date.replaceAll('-', '.')} (목) · ${range}`,
+        venue: event.venue,
+        host: event.host,
+        fee: event.fee,
+        notice: footer.notice,
+        contact: footer.contact,
+        copyright: footer.copyright,
+      };
+      document
+        .querySelectorAll('[data-text]')
+        .forEach((el) => (el.textContent = text[el.dataset.text]));
+
+      document.getElementById('services').innerHTML = services
+        .map(
+          (s) => `<div class="svc ${s.accent}">
+            <img src="svc-${s.assetId}.webp" alt="" />
+            <div class="body"><p class="order">${s.order} · ${s.label}</p><h3>${s.name}</h3><p class="desc">${s.description}</p></div>
+          </div>`,
+        )
+        .join('');
+
+      document.getElementById('program').innerHTML = program
+        .map((p) => {
+          const cls =
+            p.kind === 'featured' ? 'featured' : p.title.startsWith('오찬') ? 'break' : '';
+          const time = p.end ? `${p.start}–${p.end}` : p.start;
+          const sub = p.subtitle ? `<span class="subtitle">${p.subtitle}</span>` : '';
+          return `<tr class="${cls}"><td class="time">${time}</td><td class="title-cell">${p.title}${sub}</td></tr>`;
+        })
+        .join('');
+    </script>
+  </body>
+</html>

@@ -15,6 +15,7 @@
     "images": "node scripts/optimize-images.mjs",
     "videos": "node scripts/optimize-videos.mjs",
     "og": "node scripts/make-og.mjs",
+    "edm": "node scripts/make-edm.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

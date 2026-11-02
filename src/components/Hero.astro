@@ -7,6 +7,14 @@ import { event } from '@/data/event';
 
 const base = import.meta.env.BASE_URL;
 const hf = `${base}assets/hf`;
+const cohost = `${base}assets/cohost`;
+// 공동개최 기관 로고 (흰색 버전, 높이 160px 기준으로 통일)
+const coHosts = [
+  { name: '그린수소 글로컬 선도연구센터', file: 'gh2rc-white.png', width: 1274 },
+  { name: '제주대학교', file: 'jejunu-white.png', width: 559 },
+  { name: '사단법인 제주인공지능산업협회', file: 'jaiia-white.png', width: 522 },
+  { name: '틸론소프트', file: 'tilonsoft-white.png', width: 489 },
+];
 ---
 
 <section class="hero" aria-labelledby="hero-title" data-hero>
@@ -80,6 +88,16 @@ const hf = `${base}assets/hf`;
     <div class="hero-actions">
       <a class="btn btn-primary btn-lg" href="#registration" data-cta="hero" data-hero-cta>참가신청하기</a>
       <a class="btn btn-ghost btn-lg" href="#program">프로그램 보기</a>
+    </div>
+    <div class="hero-cohost">
+      <p class="hero-cohost-label">공동개최</p>
+      <ul class="hero-cohost-logos">
+        {coHosts.map((c) => (
+          <li>
+            <img src={`${cohost}/${c.file}`} alt={c.name} width={c.width} height="160" loading="lazy" decoding="async" />
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 
@@ -198,6 +216,39 @@ const hf = `${base}assets/hf`;
     margin-top: 40px;
   }
 
+  /* 공동개최 로고: CTA 아래 한 줄. 높이만 고정하고 폭은 비율 유지 */
+  .hero-cohost {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .hero-cohost-label {
+    margin: 0 0 14px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .hero-cohost-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 36px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hero-cohost-logos li {
+    display: flex;
+    align-items: center;
+  }
+  .hero-cohost-logos img {
+    display: block;
+    width: auto;
+    height: clamp(28px, 2.2vw, 36px);
+    opacity: 0.92;
+  }
+
   .video-toggle {
     position: absolute;
     right: var(--gutter);
@@ -246,8 +297,9 @@ const hf = `${base}assets/hf`;
         'title title'
         'sub sub'
         'meta intro'
-        'actions intro';
-      grid-template-rows: auto auto auto 1fr;
+        'actions intro'
+        'cohost cohost';
+      grid-template-rows: auto auto auto 1fr auto;
       column-gap: 48px;
     }
     .hero-title {
@@ -271,6 +323,10 @@ const hf = `${base}assets/hf`;
       grid-area: actions;
       align-self: start;
       margin-top: 32px;
+    }
+    .hero-cohost {
+      grid-area: cohost;
+      margin-top: 48px;
     }
     .hero-overlay {
       background: linear-gradient(
@@ -312,6 +368,15 @@ const hf = `${base}assets/hf`;
     }
     .hero-actions .btn {
       width: 100%;
+    }
+    .hero-cohost {
+      margin-top: 32px;
+    }
+    .hero-cohost-logos {
+      gap: 14px 24px;
+    }
+    .hero-cohost-logos img {
+      height: 26px;
     }
     .video-toggle {
       bottom: 20px;
